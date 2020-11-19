@@ -37,15 +37,23 @@ public class WordCount {
     }
 
     private static void printCharsSummary(List<Tuple2<Tuple2<Character, Long>, Long>> charList, String cat){
-        System.out.println(cat+"\n");
+        System.out.println(cat);
         List<String> headers = Arrays.asList("Rank", "Word", "Frequency");
         List<List<String>> rows = new ArrayList<>();
 
         for(Tuple2<Tuple2<Character, Long>, Long> t: charList){
             rows.add(Arrays.asList(t._2+"",String.valueOf(t._1._1),t._1._2+""));
         }
-        Board board = new Board(45);
-        String tableString = board.setInitialBlock(new Table(board, 45, headers,rows).tableToBlocks()).build().getPreview();
+        Board board = new Board(30);
+        Table table = new Table(board, 30, headers,rows);
+        List<Integer> colAlignList = Arrays.asList(
+                Block.DATA_MIDDLE_LEFT,
+                Block.DATA_MIDDLE_LEFT,
+                Block.DATA_MIDDLE_LEFT
+        );
+        table.setColAlignsList(colAlignList);
+        String tableString = board.setInitialBlock(table.tableToBlocks()).build().getPreview();
+        System.out.println(tableString);
         System.out.println(tableString+"\n\n");
     }
 
@@ -89,7 +97,7 @@ public class WordCount {
             Matcher matcher = Pattern.compile(pattern).matcher(content);
             ArrayList<String> list = new ArrayList<>();
             while(matcher.find()){
-                list.add(matcher.group());
+                list.add(matcher.group().toLowerCase());
             }
             return list.iterator();
             //return Arrays.asList(content.split("[^a-zA-Z0-9]")).listIterator();
@@ -171,6 +179,7 @@ public class WordCount {
         printCharsSummary(rChars, "Rare Letters");
 
         System.out.println("-".repeat(100)+"\n");
+        sortedWords.saveAsTextFile("sortedWords");
 
     }
 
